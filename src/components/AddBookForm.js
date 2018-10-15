@@ -1,5 +1,6 @@
 import React, { Component} from 'react';
 import Elasticsearch, {client} from '../api/elasticsearch.js';
+import moment from 'moment';
 
 class AddBookForm extends Component {
     constructor(props) {
@@ -11,7 +12,8 @@ class AddBookForm extends Component {
         author: '',
         nationality: '',
         numberOfPages: 0,
-        published: ''
+        published: '',
+        "@timestamp": new Date()
       };
   
       this.handleInputChange = this.handleInputChange.bind(this);
@@ -35,35 +37,32 @@ class AddBookForm extends Component {
         console.log(data.get('title'));
         console.log(data.get('finished'));
         console.log(data.get('numberOfRead'));
+        let Last_Finished = moment(data.get('finished')).format();
         
         const resp = client.index({
             index: 'books',
             type: 'doc',
             body: 
                 { 
-                    title: data.get('title'),
-                    finished: data.get('finished'),
-                    numberOfRead: data.get('numberOfRead'),
-                    author: data.get('author'),
-                    nationality: data.get('nationality'),
-                    numberOfPages: data.get('numberOfPages'),
-                    published: data.get('published')
+                    Title: data.get('title'),
+                    Last_Finished: Last_Finished,
+                    Tally: data.get('numberOfRead'),
+                    Author: data.get('author'),
+                    Nationality: data.get('nationality'),
+                    Pages: data.get('numberOfPages'),
+                    Published: data.get('published'),
+                    "@timestamp": moment().format("YYYY-MM-DTHH:mm:ss.SSS") + "Z"
                 }
         });
 
         console.log(resp);
-
-        // fetch('/api/form-submit-url',{
-        //     method: 'POST',
-        //     body: data,
-        // });
     };
   
     render() {
       return (
         <div>
           <p>{Elasticsearch.checkConnectivity}</p>
-        <form id="form" onSubmit={e => this.handleSubmit(e)}>
+        <form className="form" onSubmit={e => this.handleSubmit(e)}>
             <label>
                 Title:
                 <input 
@@ -129,6 +128,7 @@ class AddBookForm extends Component {
 
             <br />
             <button type="submit">Submit</button>
+            <br />
         </form>
         </div>
       );
