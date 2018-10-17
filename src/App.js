@@ -1,18 +1,12 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import './App.css';
-import Elasticsearch from './api/elasticsearch.js';
 import AddBookForm from './components/AddBookForm';
 import ViewBook from './components/ViewBook';
-import NavBar from './components/NavBar';
+
 
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    // this.state = {
-      // }
-    };
 
   render() {
     return (
