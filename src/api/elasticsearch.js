@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import { Component } from 'react';
 import elasticsearch from 'elasticsearch';
 
 export const client = new elasticsearch.Client({
@@ -18,14 +18,11 @@ function checkConnectivity() {
         }
     })
 }
-checkConnectivity();
     
 class Elasticsearch extends Component{
     render() {
             return (
-                <div id="elasticsearch">
-                    <p>{checkConnectivity()}</p>
-                </div>
+                console.log(checkConnectivity())
             )
         }     
     }

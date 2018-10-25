@@ -1,7 +1,8 @@
 import React, { Component} from 'react';
-import Elasticsearch, {client} from '../api/elasticsearch.js';
+import Elasticsearch, { client } from '../api/elasticsearch.js';
 import moment from 'moment';
-
+import FlashMessage from 'react-flash-message';
+ 
 class AddBookForm extends Component {
     constructor(props) {
       super(props);
@@ -21,12 +22,9 @@ class AddBookForm extends Component {
     }
   
     handleInputChange(event) {
-      const target = event.target;
-      const value = target.type === 'checkbox' ? target.checked : target.value;
-      const name = target.name;
   
       this.setState({
-        [name]: value
+        [event.target.name]: event.target.value
       });
     }
 
@@ -53,14 +51,35 @@ class AddBookForm extends Component {
                     Published: data.get('published'),
                     "@timestamp": moment().format("YYYY-MM-DTHH:mm:ss.SSS") + "Z"
                 }
-        });
-
+        }).then(() => {
+            this.setState({
+                title: '',
+                finished: '',
+                numberOfRead: 0,
+                author: '',
+                nationality: '',
+                numberOfPages: 0,
+                published: '',
+                "@timestamp": new Date()
+            });
+        }).then(() => {
+            return (
+                <FlashMessage duration={5000} persistOnHover={true} className="FlashMessage">
+                    <p>Success!</p>
+                </FlashMessage>
+            )
+        })
+        
         console.log(resp);
+
+ 
     };
+
   
     render() {
       return (
         <div>
+            
           <p>{Elasticsearch.checkConnectivity}</p>
         <form className="form" onSubmit={e => this.handleSubmit(e)}>
             <label>
@@ -69,7 +88,7 @@ class AddBookForm extends Component {
                     name="title"
                     type="text" 
                     value={this.state.title} 
-                    onChange={e => this.handleInputChange(e)} />
+                    onChange={e => this.handleInputChange(e)} required/>
             </label>
 
             <label>
@@ -78,7 +97,7 @@ class AddBookForm extends Component {
                     type="date" 
                     name="finished"
                     value={this.state.finished} 
-                    onChange={e => this.handleInputChange(e)} />
+                    onChange={e => this.handleInputChange(e)} required/>
             </label>
 
             <label>
@@ -87,7 +106,7 @@ class AddBookForm extends Component {
                     name="numberOfRead"
                     type="number"
                     value={this.state.numberOfRead}
-                    onChange={e => this.handleInputChange(e)} />
+                    onChange={e => this.handleInputChange(e)} required/>
             </label>
 
             <label>
@@ -96,7 +115,7 @@ class AddBookForm extends Component {
                     name="author"
                     type="text" 
                     value={this.state.author} 
-                    onChange={e => this.handleInputChange(e)} />
+                    onChange={e => this.handleInputChange(e)} required/>
             </label>
 
             <label>
@@ -114,7 +133,7 @@ class AddBookForm extends Component {
                     name="numberOfPages"
                     type="number"
                     value={this.state.numberOfPages}
-                    onChange={e => this.handleInputChange(e)} />
+                    onChange={e => this.handleInputChange(e)} required/>
             </label>
 
             <label>
@@ -123,7 +142,7 @@ class AddBookForm extends Component {
                     type="date" 
                     name="published"
                     value={this.state.published} 
-                    onChange={e => this.handleInputChange(e)} />
+                    onChange={e => this.handleInputChange(e)} required/>
             </label>
 
             <br />

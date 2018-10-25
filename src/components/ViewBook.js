@@ -7,6 +7,7 @@ export default class ViewBook extends Component {
         super(props);
 
         this.state = {
+            authors: [],
             titles: [],
             isLoading: false,
             error: null,
@@ -39,14 +40,17 @@ export default class ViewBook extends Component {
             }
         }).then((body) => {
             let hits = body.hits.hits;
-            let results = [];
+            let resultsTitle = [];
+            let resultsAuthor = [];
             hits.forEach(i => {
-                results.push(i._source.Title);
+                resultsTitle.push(i._source.Title);
+                resultsAuthor.push(i._source.Author);
             })
-            console.log(results);
+            
             this.setState(() => {
                 return {
-                    titles: results,
+                    authors: resultsAuthor,
+                    titles: resultsTitle,
                     isLoading: false
                 }
             }, function (error) {
@@ -61,10 +65,10 @@ export default class ViewBook extends Component {
     }
 
 
-    makeResultsIntoArray(props) {
+    makeResultsIntoArray(props, props2) {
         let array = [];
         for (let i = 0; i < props.length; i++) {
-            array.push( <li key = {i}> {props[i]} </li>);
+            array.push( <li key = {i}> {props[i]} - <i>{props2[i]}</i> </li> );
         }
         return array;
     }
@@ -74,7 +78,7 @@ export default class ViewBook extends Component {
     }
 
     render() {
-        const { error, isLoading, titles } = this.state;
+        const { error, isLoading, titles, authors } = this.state;
 
         if (error) {
             return ( <p> { error } </p>)
@@ -88,7 +92,8 @@ export default class ViewBook extends Component {
         <div>
             <form className = "form">
                 <ul className = "list-group list-group-flush"> 
-                    {this.makeResultsIntoArray(titles)} 
+                    {this.makeResultsIntoArray(titles, authors)} 
+                    <br />
                 </ul>  
             </form>  
         </div>

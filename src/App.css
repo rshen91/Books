@@ -106,6 +106,14 @@ button {
   font-weight: bold;
 }
 
+#play button {
+  margin-top: 1rem;
+}
+
+#play input {
+  margin-left: 0em;
+  border-radius: 5px;
+}
 /* #elasticsearch {
   
 } */
