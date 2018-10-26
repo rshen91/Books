@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 import { client } from '../api/elasticsearch.js';
 
 export default class Game extends Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
 
         this.state = {
-            question: [],
+            question: {
+                resultsTitle: [],
+                resultsAuthor: [],
+                resultsPublished: []
+            },
             isLoading: false,
             error: null,
         };
@@ -19,18 +23,25 @@ export default class Game extends Component {
         });
       }
 
-    async getQuestionsAboutAuthors() {
+    async getQuestionsData() {
         await client.search({
             index: 'books',
             type: 'doc',
             body: {
+                "sort": [
+                    {
+                      "Pages": {
+                        "order": "desc"
+                      }
+                    }
+                  ],
                 query: {
                     "match_all" : {}
                 },
-                "size": 5
+                "size": 5,
+                "from": 20
             }
         }).then((body) => {
-            console.log(body);
             let hits = body.hits.hits;
             let resultsTitle = [];
             let resultsAuthor = [];
@@ -43,25 +54,25 @@ export default class Game extends Component {
             
             this.setState(() => {
                 return {
-                    question: resultsTitle.concat(resultsAuthor).concat(resultsPublished),
+                    question: {
+                    resultsTitle: resultsTitle,
+                    resultsAuthor: resultsAuthor,
+                    resultsPublished: resultsPublished
+                },
                     asked: false
                 }
             })
-        })
-        console.log(this.state);
-        return this.state;
-    }
+            
+            })
+            console.log(this.state);
+            return this.state;
+            }
 
-    getQuestionsAboutPublishedDate = () => {
-
-    }
-
-    componentDidMount() {
-        this.getQuestionsAboutAuthors();
+    componentWillMount() {
+        this.getQuestionsData();
     }
 
     render() {
-
         if (this.error) {
             return ( <p> { this.error } </p>)
         }
@@ -71,17 +82,16 @@ export default class Game extends Component {
             <form className = "form" id="play">
                 <ul className = "list-group list-group-flush">
                     <label>
-                        {this.state.question}
-                        <br/>
-                        <input 
-                            type="text" 
-                            name="answer"
-                            value=""
-                            onChange={e => this.handleInputChange(e)}
-                            placeholder="Please add your answer here" required/>
+                        
+                        <p>Who is the author of {this.state.question.resultsTitle[0]} ?</p>
+                        
                     </label> 
                     <br />
-                    <button type="submit">Submit</button>
+                    <button type="submit">{this.state.question.resultsAuthor[3]}</button>
+                    <button type="submit">{this.state.question.resultsAuthor[2]}</button>
+                    <button type="submit">{this.state.question.resultsAuthor[4]}</button>
+                    <button type="submit">{this.state.question.resultsAuthor[0]}</button>
+                    <button type="submit">{this.state.question.resultsAuthor[1]}</button>
                 </ul>  
                 <br />
             </form>  
