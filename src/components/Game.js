@@ -63,14 +63,19 @@ export default class Game extends Component {
         }).then((body) => {
             let hits = body.hits.hits;
             let resultsTitle = [];
-            let resultsAuthor = [];
+            let unflippedAuthor = [];
             let resultsPublished = [];
             hits.forEach(i => {
                 resultsTitle.push(i._source.Title);
-                resultsAuthor.push(i._source.Author);
+                unflippedAuthor.push(i._source.Author);
                 resultsPublished.push(i._source.Published);
             })
-            
+            let resultsAuthor = [];
+            unflippedAuthor.forEach(author => {
+                let name = author.split(", ");
+                resultsAuthor.push(`${name[1]} ${name[0]}`);
+            });
+
             this.setState(() => {
                 return {
                     question: {
@@ -81,10 +86,9 @@ export default class Game extends Component {
                     asked: false
                 }
             })
-            
-            })
-            return this.state;
-            }
+        })
+        return this.state;
+    }
     /**
      * This will call getRandomNumber() which then calls getQuestionsData()
      */
@@ -93,7 +97,7 @@ export default class Game extends Component {
     }
 
     /**
-     * Ensure that the authors are unique
+     * Ensure that the authors are unique and randomly rendered 
      */
     ensureDifferentAuthors() {
         let distinctAuthors =  Array.from(new Set(this.state.question.resultsAuthor));
@@ -104,16 +108,27 @@ export default class Game extends Component {
         }
 
         return distinctAuthors.map((author, index) =>
-            <button type="submit" selection={this.handleSelection()} key={index}>{author}</button>
-        )
-        
+            <button type="submit" name={author} onClick={e => this.handleSelection(e)} key={index}>{author}</button>
+        )   
     }
 
     /**
      * When a button is clicked determine if it matches
      */
-    handleSelection() {
+    handleSelection(e) {
+        e.preventDefault();
+        const author = e.target.attributes.name.nodeValue;
+        const confirmAuthor = this.state.question.resultsAuthor;
 
+        // find the index in this.state.question.resultsAuthor
+        const index = confirmAuthor.indexOf(author);
+
+        if (index === 0) {
+            alert('You got the right answer!');
+            document.location.reload();
+        } else {
+            alert("Try again!");
+        }
     }
 
     render() {
