@@ -38,7 +38,6 @@ export default class Game extends Component {
             }
         }).then((body) => {
             let generatedFrom = Math.floor(Math.random() * Math.floor(body.hits.total - 5));
-            console.log(generatedFrom);
             this.getQuestionsData(generatedFrom)
           }); 
         };
@@ -87,10 +86,34 @@ export default class Game extends Component {
             return this.state;
             }
     /**
-     * THis will call getRandomNumber() which then calls getQuestionsData()
+     * This will call getRandomNumber() which then calls getQuestionsData()
      */
     componentWillMount() {
         this.getRandomNumber();
+    }
+
+    /**
+     * Ensure that the authors are unique
+     */
+    ensureDifferentAuthors() {
+        let distinctAuthors =  Array.from(new Set(this.state.question.resultsAuthor));
+
+        for (let i = distinctAuthors.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [distinctAuthors[i], distinctAuthors[j]] = [distinctAuthors[j], distinctAuthors[i]]; 
+        }
+
+        return distinctAuthors.map((author, index) =>
+            <button type="submit" selection={this.handleSelection()} key={index}>{author}</button>
+        )
+        
+    }
+
+    /**
+     * When a button is clicked determine if it matches
+     */
+    handleSelection() {
+
     }
 
     render() {
@@ -106,11 +129,7 @@ export default class Game extends Component {
                         <p>Who is the author of {this.state.question.resultsTitle[0]}?</p>
                     </label> 
                     <br />
-                    <button type="submit">{this.state.question.resultsAuthor[3]}</button>
-                    <button type="submit">{this.state.question.resultsAuthor[2]}</button>
-                    <button type="submit">{this.state.question.resultsAuthor[4]}</button>
-                    <button type="submit">{this.state.question.resultsAuthor[0]}</button>
-                    <button type="submit">{this.state.question.resultsAuthor[1]}</button>
+                    {this.ensureDifferentAuthors()}      
                 </ul>  
                 <br />
             </form>  
