@@ -17,13 +17,33 @@ export default class Game extends Component {
     }
 
     handleInputChange(event) {
-  
         this.setState({
           [event.target.name]: event.target.value
         });
       }
 
-    async getQuestionsData() {
+    /**
+     * This function needs to run before generating the questions to 
+     * randomly generate five entries that are within the total amount 
+     * of book entries
+     */
+    getRandomNumber() {
+        client.search({
+            index: 'books',
+            type: 'doc',
+            body: {
+                query: {
+                    "match_all" : {}
+                }
+            }
+        }).then((body) => {
+            let generatedFrom = Math.floor(Math.random() * Math.floor(body.hits.total - 5));
+            console.log(generatedFrom);
+            this.getQuestionsData(generatedFrom)
+          }); 
+        };
+
+    async getQuestionsData(from) {
         await client.search({
             index: 'books',
             type: 'doc',
@@ -39,7 +59,7 @@ export default class Game extends Component {
                     "match_all" : {}
                 },
                 "size": 5,
-                "from": 20
+                "from": from
             }
         }).then((body) => {
             let hits = body.hits.hits;
@@ -64,12 +84,13 @@ export default class Game extends Component {
             })
             
             })
-            console.log(this.state);
             return this.state;
             }
-
+    /**
+     * THis will call getRandomNumber() which then calls getQuestionsData()
+     */
     componentWillMount() {
-        this.getQuestionsData();
+        this.getRandomNumber();
     }
 
     render() {
@@ -82,9 +103,7 @@ export default class Game extends Component {
             <form className = "form" id="play">
                 <ul className = "list-group list-group-flush">
                     <label>
-                        
-                        <p>Who is the author of {this.state.question.resultsTitle[0]} ?</p>
-                        
+                        <p>Who is the author of {this.state.question.resultsTitle[0]}?</p>
                     </label> 
                     <br />
                     <button type="submit">{this.state.question.resultsAuthor[3]}</button>
