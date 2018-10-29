@@ -5,8 +5,6 @@ import AddBookForm from './components/AddBookForm';
 import ViewBook from './components/ViewBook';
 import Game from './components/Game';
 
-
-
 class App extends Component {
 
   render() {
@@ -21,14 +19,15 @@ class App extends Component {
           </ul>
         </nav>
         <br />
+        
         <header className="App-header">
           <h1 className="App-title">Book Tracker</h1>
         </header>
-        <Switch>
-          <Route exact path="/" component={AddBookForm} />
-          <Route exact path ="/viewbook" component={ViewBook} />
-          <Route exact path="/game" component={Game} />
-        </Switch>
+          <Switch>
+            <Route exact path="/" component={AddBookForm} />
+            <Route exact path ="/viewbook" component={ViewBook} />
+            <Route exact path="/game" component={Game}/>
+          </Switch>
          </div>
       </ Router>
     )

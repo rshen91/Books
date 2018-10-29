@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "elasticsearch": "^15.1.1",
+    "file-system": "^2.2.2",
     "http-server": "^0.11.1",
     "moment": "^2.22.2",
     "package.json": "^2.0.1",
