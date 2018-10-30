@@ -3,6 +3,7 @@
 # dependencies
 /node_modules
 /elasticsearch-6.3.2*
+config.js
 
 # testing
 /coverage
