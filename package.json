@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "css-loader": "^1.0.0",
+    "dotenv": "^6.1.0",
     "file-loader": "^2.0.0",
     "postcss-loader": "^3.0.0",
     "style-loader": "^0.23.1",
