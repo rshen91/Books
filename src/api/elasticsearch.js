@@ -16,7 +16,7 @@ export const client = new elasticsearch.Client({
 });
 
 function checkConnectivity() {
-    client.ping({
+    client.ping({ 
         requestTimeout: 1000
     }, function (e) {
         if (e) {
