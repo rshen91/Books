@@ -1,12 +1,16 @@
 import { Component } from 'react';
 import elasticsearch from 'elasticsearch';
-import fs from 'file-system';
+import CERTIFICATE, { KEY } from '../components/Certificates';
+
+// 'https://booktracker-elastic.herokuapp.com/'
 
 export const client = new elasticsearch.Client({
-    host: ['localhost:9200', 'https://booktracker-elastic.herokuapp.com'],
+    host: ['https://localhost:9200/', 'http://localhost:9200/'],
     ssl: {
-        ca: fs.readFileSync('/Users/Rachel/src/booktracker/elasticsearch-6.3.2/config/certs/*'),
-        rejectUnauthorized: true
+        ca: CERTIFICATE,
+        cert: CERTIFICATE,
+        key: KEY,
+        rejectUnauthorized: false
       },
     apiVersion: '6.3'
 });

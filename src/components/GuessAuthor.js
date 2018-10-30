@@ -126,9 +126,7 @@ export default class GuessAuthor extends Component {
 
         if (index === 0) {
             return (
-                Success.props({
-                    showStore: true
-                }),
+                alert("You got it!"),
                 document.location.reload()
             )
         } else {
