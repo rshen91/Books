@@ -1,8 +1,6 @@
 import { Component } from 'react';
 import elasticsearch from 'elasticsearch';
 
-//'https://booktracker-elastic.herokuapp.com/'
-
 export const client = new elasticsearch.Client({
     host: [
             {
@@ -15,7 +13,7 @@ export const client = new elasticsearch.Client({
     apiVersion: '6.3'
 });
 
-function checkConnectivity() {
+const checkConnectivity = () => {
     client.ping({ 
         requestTimeout: 1000
     }, function (e) {
@@ -29,6 +27,11 @@ function checkConnectivity() {
 }
     
 class Elasticsearch extends Component{
+    constructor(props) {
+        super(props)
+
+        this.checkConnectivity = this.checkConnectivity.bind(this);
+    }
     render() {
             return (
                 console.log(checkConnectivity())

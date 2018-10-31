@@ -114,9 +114,6 @@ button {
   border-radius: 5px;
 }
 
-/* .success {
+.hidden {
   display: none;
-  background-color: #F6F740;
-  padding: 1.5rem;
-  font-weight: bold;
-} */
+}

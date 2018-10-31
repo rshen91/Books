@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import { client } from '../api/elasticsearch.js';
-import Success from './Success'
 
 export default class GuessAuthor extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.getRandomNumber = this.getRandomNumber.bind(this);
+        this.getQuestionsData = this.getQuestionsData.bind(this);
+        this.componentWillMount = this.componentWillMount.bind(this);
+        this.ensureDifferentAuthors = this.ensureDifferentAuthors.bind(this);
+        this.handleSelection = this.handleSelection.bind(this);
 
         this.state = {
             question: {
@@ -14,9 +20,14 @@ export default class GuessAuthor extends Component {
             },
             isLoading: false,
             error: null,
+            score: 0,
         };
     }
 
+    /**
+     * Show input bar input
+     * @param {Event} event 
+     */
     handleInputChange(event) {
         this.setState({
           [event.target.name]: event.target.value
@@ -39,10 +50,16 @@ export default class GuessAuthor extends Component {
             }
         }).then((body) => {
             let generatedFrom = Math.floor(Math.random() * Math.floor(body.hits.total - 5));
-            this.getQuestionsData(generatedFrom)
+            this.getQuestionsData(generatedFrom);
           }); 
         };
 
+    /**
+     * Chooses five books sorted by pages starting at a random from value 
+     * Flips the name to first last name where applicable 
+     * Sets the new state with results from the query
+     * @param {Number} from 
+     */
     async getQuestionsData(from) {
         await client.search({
             index: 'books',
@@ -72,9 +89,15 @@ export default class GuessAuthor extends Component {
                 resultsPublished.push(i._source.Published);
             })
             let resultsAuthor = [];
+            
             unflippedAuthor.forEach(author => {
-                let name = author.split(", ");
-                resultsAuthor.push(`${name[1]} ${name[0]}`);
+                // check that the author has a comma in their name and isn't multiple authors
+                if (author.indexOf(',') !== -1 && author.indexOf('&') === -1 && author.indexOf('and') === -1) {
+                    let name = author.split(", ");
+                    resultsAuthor.push(`${name[1]} ${name[0]}`);
+                } else {
+                    resultsAuthor.push(author);
+                }
             });
 
             this.setState(() => {
@@ -127,6 +150,9 @@ export default class GuessAuthor extends Component {
         if (index === 0) {
             return (
                 alert("You got it!"),
+                this.setState(prevScore => {
+                    prevScore.score += 1
+                }),
                 document.location.reload()
             )
         } else {
@@ -141,7 +167,6 @@ export default class GuessAuthor extends Component {
 
         return ( 
                 <div>
-                    <Success />
                     <label>
                         <p>Who is the author of {this.state.question.resultsTitle[0]}?</p>
                     </label> 

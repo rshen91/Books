@@ -1,11 +1,15 @@
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 import Elasticsearch, { client } from '../api/elasticsearch.js';
 import moment from 'moment';
-import FlashMessage from 'react-flash-message';
- 
+import { withAlert } from 'react-alert';
+
 class AddBookForm extends Component {
     constructor(props) {
       super(props);
+             
+      this.handleInputChange = this.handleInputChange.bind(this);
+      this.handleSubmit = this.handleSubmit.bind(this);
+
       this.state = {
         title: '',
         finished: '',
@@ -14,11 +18,8 @@ class AddBookForm extends Component {
         nationality: '',
         numberOfPages: 0,
         published: '',
-        "@timestamp": new Date()
+        "@timestamp": new Date(),
       };
-  
-      this.handleInputChange = this.handleInputChange.bind(this);
-      this.handleSubmit = this.handleSubmit.bind(this);
     }
   
     handleInputChange(event) {
@@ -31,10 +32,6 @@ class AddBookForm extends Component {
     handleSubmit(event) {
         event.preventDefault();
         const data = new FormData(event.target);
-        console.log(data);
-        console.log(data.get('title'));
-        console.log(data.get('finished'));
-        console.log(data.get('numberOfRead'));
         let Last_Finished = moment(data.get('finished')).format();
         
         const resp = client.index({
@@ -60,26 +57,20 @@ class AddBookForm extends Component {
                 nationality: '',
                 numberOfPages: 0,
                 published: '',
-                "@timestamp": new Date()
+                "@timestamp": new Date(),
             });
-        }).then(() => {
-            return (
-                <FlashMessage duration={5000} persistOnHover={true} className="FlashMessage">
-                    <p>Success!</p>
-                </FlashMessage>
-            )
-        })
-        
+        }).then(
+            this.props.alert.show('Book added!')
+        );
         console.log(resp);
-
- 
     };
 
+   
   
     render() {
       return (
+                
         <div>
-            
           <p>{Elasticsearch.checkConnectivity}</p>
         <form className="form" onSubmit={e => this.handleSubmit(e)}>
             <label>
@@ -150,8 +141,9 @@ class AddBookForm extends Component {
             <br />
         </form>
         </div>
-      );
+        )
     }
-  }
+}
 
-  export default AddBookForm;
+
+  export default withAlert(AddBookForm);

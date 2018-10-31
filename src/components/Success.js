@@ -1,27 +1,30 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from "react";
+import { withAlert } from "react-alert";
 
-export default class Success extends Component {
-  constructor() {
-    super()
+class Success extends Component {
   
-    this.state = {
-      showStore: false,
-    }
-  }
-  getInitialState() {
-    return { showStore: false };
-  }
-
-  causeSuccess() {
-      alert("made it");
-      this.setState({ showStore: true });
-  }
-
   render() {
-    return(
-      <div className="success" style={{display: this.state.showStore ? 'block': 'none' }}>
-        <span>You got the right answer!</span>
-      </div>
-      );
-    }
-};
+    return (
+      <Fragment>
+        <button
+          onClick={() => {
+            this.props.alert.error("You just broke something!");
+          }}
+          className='hidden'
+        >
+          Oops, an error
+        </button>
+        <button
+          onChange={() => {
+            this.props.alert.success("Book Added!");
+          }}
+          className='hidden'
+        >
+          Success!
+        </button>
+      </Fragment>
+    );
+  }
+}
+
+export default withAlert(Success);

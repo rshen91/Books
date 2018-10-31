@@ -1,34 +1,35 @@
 import React, { Component } from 'react';
 import { client } from '../api/elasticsearch.js';
+import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 
 export default class SortDate extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+        this.getRandomNumber = this.getRandomNumber.bind(this);
+        this.getQuestionsData = this.getQuestionsData.bind(this);
+        this.componentWillMount = this.componentWillMount.bind(this);
+        this.ensureDifferentAuthors = this.ensureDifferentAuthors.bind(this);
 
         this.state = {
-            question: {
-                resultsTitle: [],
-                resultsAuthor: [],
-                resultsPublished: []
-            },
+            items: [
+                {
+                    resultsTitle: [],
+                    resultsAuthor: [],
+                    resultsPublished: []
+                }
+            ],
             isLoading: false,
             error: null,
         };
     }
-
-    handleInputChange(event) {
-        this.setState({
-          [event.target.name]: event.target.value
-        });
-      }
 
     /**
      * This function needs to run before generating the questions to 
      * randomly generate five entries that are within the total amount 
      * of book entries
      */
-    getRandomNumber() {
-        client.search({
+    async getRandomNumber() {
+        await client.search({
             index: 'books',
             type: 'doc',
             body: {
@@ -37,6 +38,7 @@ export default class SortDate extends Component {
                 }
             }
         }).then((body) => {
+            console.log(body);
             let generatedFrom = Math.floor(Math.random() * Math.floor(body.hits.total - 5));
             this.getQuestionsData(generatedFrom)
           }); 
@@ -78,7 +80,7 @@ export default class SortDate extends Component {
 
             this.setState(() => {
                 return {
-                    question: {
+                    items: {
                     resultsTitle: resultsTitle,
                     resultsAuthor: resultsAuthor,
                     resultsPublished: resultsPublished
@@ -100,7 +102,7 @@ export default class SortDate extends Component {
      * Ensure that the authors are unique and randomly rendered 
      */
     ensureDifferentAuthors() {
-        let distinctAuthors =  Array.from(new Set(this.state.question.resultsAuthor));
+        let distinctAuthors =  Array.from(new Set(this.state.items.resultsAuthor));
 
         for (let i = distinctAuthors.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -112,26 +114,27 @@ export default class SortDate extends Component {
         )   
     }
 
-    /**
-     * When a button is clicked determine if it matches
-     */
-    handleSelection(e) {
-        e.preventDefault();
-        const author = e.target.attributes.name.nodeValue;
-        const confirmAuthor = this.state.question.resultsAuthor;
+    SortableItem = SortableElement(({value}) =>
+        <li>{value}</li>
+    );
 
-        // find the index in this.state.question.resultsAuthor
-        const index = confirmAuthor.indexOf(author);
+    SortableList = SortableContainer(({items}) => {
+        return (
+            <ul>
+            {items.map((value, index) => (
+                <SortDate key={`item-${index}`} index={index} value={value} />
+            ))}
+            </ul>
+        );
+    });
 
-        if (index === 0) {
-            alert('You got the right answer!');
-            document.location.reload();
-        } else {
-            alert("Try again!");
-        }
-    }
+  onSortEnd = ({oldIndex, newIndex}) => {
+    this.setState({
+      items: arrayMove(this.state.items, oldIndex, newIndex),
+    });
+  };
 
-    render() {
+  render() {
         if (this.error) {
             return ( <p> { this.error } </p>)
         }
@@ -143,7 +146,8 @@ export default class SortDate extends Component {
                     </label> 
                     <br />
                     {this.ensureDifferentAuthors()}      
+                    <SortDate items={this.state.items} onSortEnd={this.onSortEnd} />;
                 </div>
-                )
+        )
     }
 }
