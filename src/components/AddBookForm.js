@@ -18,8 +18,10 @@ class AddBookForm extends Component {
         nationality: '',
         numberOfPages: 0,
         published: '',
-        "@timestamp": new Date(),
+        "@timestamp": null,
       };
+
+    //   console.log(this.state["@timestamp"])
     }
   
     handleInputChange(event) {
@@ -46,7 +48,7 @@ class AddBookForm extends Component {
                     Nationality: data.get('nationality'),
                     Pages: data.get('numberOfPages'),
                     Published: data.get('published'),
-                    "@timestamp": moment().format("YYYY-MM-DTHH:mm:ss.SSS") + "Z"
+                    "@timestamp": moment().format("YYYY-MM-DD")
                 }
         }).then(() => {
             this.setState({
@@ -57,11 +59,12 @@ class AddBookForm extends Component {
                 nationality: '',
                 numberOfPages: 0,
                 published: '',
-                "@timestamp": new Date(),
+                "@timestamp": '',
             });
-        }).then(
-            this.props.alert.show('Book added!')
-        );
+        })
+        
+        this.props.alert.success('Book added!')
+    
         console.log(resp);
     };
 

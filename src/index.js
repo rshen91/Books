@@ -9,7 +9,7 @@ import AlertTemplate from 'react-alert-template-basic';
 
 const options = {
     position: 'top center',
-    timeout: 5000,
+    timeout: 3000,
     offset: '30px',
     transition: 'scale'
   }
