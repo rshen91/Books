@@ -11,11 +11,11 @@ class App extends Component {
     return (
       <Router>
        <div className="App">
-        <nav className="navbar navbar-expand-lg navbar-light bg-light active-link">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
           <ul className="navbar-nav mr-auto">
-            <li><Link to={'/'} className="nav-link active-link"> Add a Book </Link></li>
-            <li><Link to={'/viewbook'} className="nav-link active-link"> View Recently Read Books </Link></li>
-            <li><Link to={'/game'} className="nav-link active-link"> Play </Link></li>
+            <li><Link to={'/'} className="nav-link"> Add a Book </Link></li>
+            <li><Link to={'/viewbook'} className="nav-link"> View Recently Read Books </Link></li>
+            <li><Link to={'/game'} className="nav-link"> Play </Link></li>
           </ul>
         </nav>
         <br />

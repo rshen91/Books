@@ -137,6 +137,7 @@ class AddBookForm extends Component {
                     name="published"
                     value={this.state.published} 
                     onChange={e => this.handleInputChange(e)} required/>
+                    
             </label>
 
             <br />

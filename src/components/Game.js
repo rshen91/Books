@@ -1,15 +1,15 @@
 import React from 'react';
 import GuessAuthor from './GuessAuthor';
-// import SortDate from './SortDate';
+import SortDate from './SortDate';
 
 const Game = (props) =>  {
 
 return ( 
     <div>
         <form className = "form" id="play">
-            <ul className = "list-group list-group-flush">
+            <ul className>
                 <section>
-                    {/* <SortDate /> */}
+                    <SortDate/>
                     <GuessAuthor />
                 </section>    
             </ul>  

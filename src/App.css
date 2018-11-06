@@ -42,6 +42,10 @@ h1 {
   border-radius: 25px;
 }
 
+.form li {
+  font-family: 'Indie Flower', cursive;
+}
+
 form {
   width: 100%;
   max-width: 800px;
@@ -57,7 +61,7 @@ form {
 }
 
 
-label{
+label {
   margin: 0.20em;
   grid-template-columns: repeat(8, 1fr);
   gap: 10px;
@@ -86,7 +90,6 @@ input {
 
 button {
   display: grid;
-  /* background-color: #63585E; */
   background: #C4DACF;
   font-family: 'Indie Flower', cursive;
   text-align: center;
@@ -95,7 +98,7 @@ button {
   border-radius: 25px;
 }
 
-.active-link {
+a:hover {
   font-weight: bold;
 }
 
@@ -113,3 +116,4 @@ button {
   margin-left: 0em;
   border-radius: 5px;
 }
+
