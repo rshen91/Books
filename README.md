@@ -6,3 +6,5 @@
 
 You can view the work in progress here: 
 [https://booktracker-elastic.herokuapp.com/](https://booktracker-elastic.herokuapp.com/)
+
+![Demo Booktracker](https://user-images.githubusercontent.com/20343860/48316711-3d3f0800-e59c-11e8-889c-d842c0f78590.gif)
